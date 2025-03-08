@@ -51,7 +51,7 @@ PFont font;
 int fontSize;
 PImage text;
 
-//Dot[] dots = new Dot[5];
+
 ArrayList<Dot>dots;
 
 //Dot dot;
@@ -59,60 +59,60 @@ ArrayList<Dot>dots;
 
 void setup() {
   size(600, 600);
-  //size(1200, 800);
+  //size(900, 900);
   smooth();
-  //fontSize = 42;
-  //font = createFont("data/NotoSerifJP-Regular.ttf", fontSize);
+  fontSize = 42;
+  font = createFont("data/NotoSerifJP-Regular.ttf", fontSize);
   //textSize(fontSize);
-  //  textFont(font, fontSize);
-  //text = loadImage("earth.jpg");
-  text = loadImage("logo_text.png");
+  textFont(font, fontSize);//**
+  
+  //text = loadImage("logo_text.png");
 
 
-  drawText();
+  ///drawText();
 
 
   dots = new ArrayList<Dot>();
 
-  for (int i = 0; i <= 0; i++) {
+  for (int i = 0; i <= 5; i++) { // make limit 0 to turn off
     //Dot dot = new Dot( int(random(100, 400)), int(random(100, 400) ), color(255, 0, 0) );
     //append(dots, dot); //dots.append(dot);
     dots.add(new Dot( int(random(150, 350)), int(random(150, 350) ), color(255, 0, 0) ));
   }
-  //println(dots.length);
+  
 }
 
 
 void draw() {
 
-  pushMatrix();
-  // if (savePDF) beginRecord(PDF, timestamp()+".pdf");
+  
+  if (savePDF) beginRecord(PDF, timestamp()+".pdf");
   // if (savePDF) beginRecord(PDF, freqX+"_"+freqY+"_"+int(phi)+".pdf");
 
-  //  background(255);
-
+    background(255);
+ // /*
   if (drawText) {
-    drawText();
-  }
+   //drawText(); //**
+   }
+ //  */
+  
 
-  /*
-  //pushMatrix();
-  /*
+
    if (doDrawAnimation) {
    // this is the one
    
    //translate(width*3/4.0, height*3/4.0);
-   translate(width/2, height/2);
+   translate(width/2, height/2); //**
    factorX = width/4-margin;
    factorY = height/4-margin;
-   } else {
-   
-   // translate(width/2, height/2);
+   } /* else {
+  
+   translate(width/2, height/2);
    factorX = width/2-margin;
    factorY = height/2-margin;
-   }
-   */
-  //popMatrix();
+   } */
+  
+ // popMatrix();
   //   */
 
   noFill();
@@ -134,7 +134,8 @@ void draw() {
   }
   //*/
   endShape();
-  popMatrix();
+  pushMatrix();
+  translate(-width/2, -height/2);
   //different colors; different widths (small large
   for (int i = 0; i < dots.size() - 1; i++) {
     //dots[i].display();
@@ -164,18 +165,12 @@ void draw() {
       }
     }
 
-    //d.update();
+
     d.update(); //add the motion to location
     d.playground(); // stay within the area
     d.display(random(80));
   }
-  /*
-  dots(206, 368);
-   dots(386, 253);
-   dots(352, 345);
-   dots(247,228);
-   dots(187, 196);
-   */
+ 
 
   /*
   if (doDrawAnimation) {
@@ -190,35 +185,37 @@ void draw() {
     println("saving to pdf – finishing");
     endRecord();
   }
-  ///*
-  // if (drawText) {
-  // drawText();
 
-  //println("here");
-  // }
-  //*/
-  //popMatrix();
+  //pushMatrix();
+  //translate(width/2, height/2);
+  if (drawText) {
+    drawText();
+  }
+  popMatrix();
+
+  
 }
 
 void drawText() {
   //text
   //pushMatrix();
   //translate(width*3/4.0, height*3/4.0);
-  //  fill(0, 200);
-  //  noStroke();
+  fill(0, 200);
+  noStroke();
   //rect(width/2 - 5, height/2+130, 300, 50);
   //rect(-160, -25, 320, 60);
-  //  rect(140, 275, 320, 60); //soften edges
+  rect(140, 275, 320, 60); //soften edges
 
-  //  fill(255);
+  fill(255);
   //text("LadyK Studios", width/2, height/2 +170);
-  //  text("LadyK Studios", 155, 320);
-  //  stroke(0);
-  //popMatrix();
-  pushMatrix();
-  scale(.5);
-  image(text, 155, 320);
-  popMatrix();
+  text("LadyK Studios", 155, 320);
+  stroke(0);
+  
+  //  pushMatrix();
+  //scale(.5);
+  //image(text, 155, 320);
+  //  image(text, width/2, height/32);
+  // popMatrix();
 }
 
 

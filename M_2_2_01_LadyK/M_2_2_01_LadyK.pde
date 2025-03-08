@@ -65,7 +65,7 @@ void setup() {
   font = createFont("data/NotoSerifJP-Regular.ttf", fontSize);
   //textSize(fontSize);
   textFont(font, fontSize);//**
-  
+
   //text = loadImage("logo_text.png");
 
 
@@ -79,40 +79,40 @@ void setup() {
     //append(dots, dot); //dots.append(dot);
     dots.add(new Dot( int(random(150, 350)), int(random(150, 350) ), color(255, 0, 0) ));
   }
-  
 }
 
 
 void draw() {
 
-  
+
   if (savePDF) beginRecord(PDF, timestamp()+".pdf");
   // if (savePDF) beginRecord(PDF, freqX+"_"+freqY+"_"+int(phi)+".pdf");
 
-    background(255);
- // /*
+  background(255);
+  // /*
   if (drawText) {
-   //drawText(); //**
-   }
- //  */
-  
+    //drawText(); //**
+  }
+  //  */
 
 
-   if (doDrawAnimation) {
-   // this is the one
+  pushMatrix();
+
+  if (doDrawAnimation) {
+    // this is the one
+
+    //translate(width*3/4.0, height*3/4.0);
+    translate(width/2, height/2); //**
+    factorX = width/4-margin;
+    factorY = height/4-margin;
+  } /* else {
    
-   //translate(width*3/4.0, height*3/4.0);
-   translate(width/2, height/2); //**
-   factorX = width/4-margin;
-   factorY = height/4-margin;
-   } /* else {
-  
    translate(width/2, height/2);
    factorX = width/2-margin;
    factorY = height/2-margin;
    } */
-  
- // popMatrix();
+
+
   //   */
 
   noFill();
@@ -134,8 +134,8 @@ void draw() {
   }
   //*/
   endShape();
-  pushMatrix();
-  translate(-width/2, -height/2);
+  popMatrix();
+
   //different colors; different widths (small large
   for (int i = 0; i < dots.size() - 1; i++) {
     //dots[i].display();
@@ -170,7 +170,7 @@ void draw() {
     d.playground(); // stay within the area
     d.display(random(80));
   }
- 
+
 
   /*
   if (doDrawAnimation) {
@@ -186,31 +186,22 @@ void draw() {
     endRecord();
   }
 
-  //pushMatrix();
-  //translate(width/2, height/2);
+
   if (drawText) {
     drawText();
   }
-  popMatrix();
-
-  
 }
 
 void drawText() {
   //text
-  //pushMatrix();
-  //translate(width*3/4.0, height*3/4.0);
+  
   fill(0, 200);
   noStroke();
-  //rect(width/2 - 5, height/2+130, 300, 50);
-  //rect(-160, -25, 320, 60);
   rect(140, 275, 320, 60); //soften edges
-
   fill(255);
-  //text("LadyK Studios", width/2, height/2 +170);
   text("LadyK Studios", 155, 320);
   stroke(0);
-  
+
   //  pushMatrix();
   //scale(.5);
   //image(text, 155, 320);

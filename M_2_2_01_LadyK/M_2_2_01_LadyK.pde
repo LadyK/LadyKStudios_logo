@@ -66,7 +66,7 @@ void setup() {
   //textSize(fontSize);
   textFont(font, fontSize);//**
 
-  //text = loadImage("logo_text.png");
+  text = loadImage("logo_text.png");
 
 
   ///drawText();
@@ -89,11 +89,11 @@ void draw() {
   // if (savePDF) beginRecord(PDF, freqX+"_"+freqY+"_"+int(phi)+".pdf");
 
   background(255);
-  // /*
+  /*
   if (drawText) {
-    //drawText(); //**
-  }
-  //  */
+   //drawText(); //** //if not see-through
+   }
+   */
 
 
   pushMatrix();
@@ -105,12 +105,7 @@ void draw() {
     translate(width/2, height/2); //**
     factorX = width/4-margin;
     factorY = height/4-margin;
-  } /* else {
-   
-   translate(width/2, height/2);
-   factorX = width/2-margin;
-   factorY = height/2-margin;
-   } */
+  }
 
 
   //   */
@@ -138,39 +133,46 @@ void draw() {
 
   //different colors; different widths (small large
   for (int i = 0; i < dots.size() - 1; i++) {
-    //dots[i].display();
-    Dot d = dots.get(i);
+    Dot d = dots.get(i); // array list vs array
     //****
-    int x, y;
-    //random 2D location to zip over; arrive; hover
-    x = int(random(0, width));
-    y = int(random(0, height));
-    PVector newSpot = new PVector(x, y);
 
-    d.zipOver(newSpot); // need to program this
+    //d.zipOver(newSpot); // need to program this
     //d.update();
-    d.arrive(newSpot, false);
+    //d.arrive(newSpot, false);
+    //PVector m = new PVector(mouseX, mouseY);
+    //d.arrive(m, false);
+
     //if we've arrived and hover is flipped on:
     if (d.hover == true) { // hover the boolean variable
       //should these nxt 4 lines be here?:
       //pick a length of time to hover:
-      float amount = random(20, 60);
+      float amount = random(20, 180);
       d.ylow = d.location.y + amount; //lower area on screen
       d.yhigh = d.location.y - amount; // upper area on screen
       //if our current time - startHover time is less than out duration
-      if (millis() - d.startHover < d.duration) { //over all hover
-        d.hover(newSpot, d.ylow, d.yhigh); // if we are there, hover
-      } else {
-        println("no longer hovering");
+      if (millis() - d.startHover < d.duration_interval) { //over all hover
+        println("hovering");
+        d.hover(d.seekLocation, d.ylow, d.yhigh); // if we are there, hover
       }
-    }
+    } else if (d.hover == false) {
+      int x, y;
+      x = int(random(150, 460)); //must be on within the playground
+      y = int(random(140, 430));
+      PVector newSpot = new PVector(x, y);
+      //pass newSpot to array
+      //Don't want to call the method; just pass variables --> i.seek(newSpot_bool)
+      d.seekLocation = newSpot;
+     // d.seek_arrive = true; //flip seek on
+      d.duration_interval= random(15, 90); //new hover duration
+      d.acc = new PVector(0.001, .001); // new speed
 
+      d.seek_arrive(newSpot, false);
+    }
 
     d.update(); //add the motion to location
     d.playground(); // stay within the area
     d.display(random(80));
   }
-
 
   /*
   if (doDrawAnimation) {
@@ -194,19 +196,20 @@ void draw() {
 
 void drawText() {
   //text
-  
+
   fill(0, 200);
   noStroke();
-  rect(140, 275, 320, 60); //soften edges
+  //rect(140, 275, 320, 60); //soften edges
   fill(255);
-  text("LadyK Studios", 155, 320);
+  //text("LadyK Studios", 155, 320);
   stroke(0);
 
-  //  pushMatrix();
+  pushMatrix();
   //scale(.5);
-  //image(text, 155, 320);
+  translate(-width/2 + 150, -height/2- 25);
+  image(text, 155, 320);
   //  image(text, width/2, height/32);
-  // popMatrix();
+  popMatrix();
 }
 
 

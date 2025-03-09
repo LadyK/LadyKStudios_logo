@@ -1,12 +1,12 @@
 class Dot {
 
-  PVector location;
+  PVector location, seekLocation;
   color kuler;
   int op, topspeed;
   PVector acc, velocity;
   float maxspeed, maxforce, startHover;
-  boolean up, down, hover;
-  float duration, ylow, yhigh;
+  boolean up, down, hover, seek_arrive;
+  float duration_interval, ylow, yhigh, timeStamp;
 
 
   Dot(int x, int y, color k) {
@@ -19,12 +19,17 @@ class Dot {
     maxforce = 0.1;
 
     velocity = PVector.random2D(); //new PVector(0, 0);
-    velocity.mult(0.3);
+    velocity.mult(0.5);
     topspeed = 1;
     up = true;
     down = false;
     hover = false;
     startHover = 0;
+    hover = false;
+    //seek = true;
+    //arrive = false;
+    duration_interval = random(15, 90);
+    timeStamp = 0;
   }
 
   void update() {
@@ -35,14 +40,16 @@ class Dot {
     acc.mult(0);
   }
 
-  void zipOver(PVector goal) {  // a random new spot on the play ground is chosen & passed
+  void seek(PVector goal) {  // a random new spot on the play ground is chosen & passed
     //steering
     //faster acceleration towards goal
   }
 
-  void arrive(PVector goal, boolean h) {
+  void seek_arrive(PVector goal, boolean h) {
     //individual's duration set here for how long should hover
-    duration = random(5000, 20000);
+    //duration = random(1000, 5000);
+    //print("duration is: ");
+    //println(duration);
     PVector desired = PVector.sub(goal, location);
     float d = desired.mag();
     if (d < 150 && d > 10) {
@@ -51,6 +58,8 @@ class Dot {
     } else if (( d <= 10) && (h == false) ) {
       hover = true;
       startHover = millis();
+     // print("startHover is: ");
+      //println("startHover");
       h = true;
     } else {
       desired.setMag(maxspeed);
@@ -64,6 +73,7 @@ class Dot {
   }
 
   void hover(PVector home, float yLow, float yHigh) {
+     
     //up and down
     //for a certain amount of time
     // once in a while, slight back and forth

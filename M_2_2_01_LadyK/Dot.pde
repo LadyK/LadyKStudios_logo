@@ -28,7 +28,7 @@ class Dot {
     hover = false;
     //seek = true;
     //arrive = false;
-    duration_interval = random(15, 90);
+    duration_interval = random(15000, 90000);
     timeStamp = 0;
   }
 

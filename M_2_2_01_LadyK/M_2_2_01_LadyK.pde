@@ -60,6 +60,7 @@ ArrayList<Dot>dots;
 void setup() {
   size(600, 600);
   //size(900, 900);
+  frameRate(10);
   smooth();
   fontSize = 42;
   font = createFont("data/NotoSerifJP-Regular.ttf", fontSize);
@@ -74,7 +75,7 @@ void setup() {
 
   dots = new ArrayList<Dot>();
 
-  for (int i = 0; i <= 5; i++) { // make limit 0 to turn off
+  for (int i = 0; i <= 1; i++) { // make limit 0 to turn off
     //Dot dot = new Dot( int(random(100, 400)), int(random(100, 400) ), color(255, 0, 0) );
     //append(dots, dot); //dots.append(dot);
     dots.add(new Dot( int(random(150, 350)), int(random(150, 350) ), color(255, 0, 0) ));
@@ -153,20 +154,20 @@ void draw() {
       if (millis() - d.startHover < d.duration_interval) { //over all hover
         println("hovering");
         d.hover(d.seekLocation, d.ylow, d.yhigh); // if we are there, hover
-      }
+      }// we are not hovering
     } else if (d.hover == false) {
-      int x, y;
-      x = int(random(150, 460)); //must be on within the playground
-      y = int(random(140, 430));
-      PVector newSpot = new PVector(x, y);
-      //pass newSpot to array
-      //Don't want to call the method; just pass variables --> i.seek(newSpot_bool)
-      d.seekLocation = newSpot;
-     // d.seek_arrive = true; //flip seek on
-      d.duration_interval= random(15, 90); //new hover duration
-      d.acc = new PVector(0.001, .001); // new speed
+      // int x, y;
+      // x = int(random(150, 460)); //must be on within the playground
+      // y = int(random(140, 430));
+      // PVector newSpot = new PVector(x, y);
+      // //pass newSpot to array
+      // //Don't want to call the method; just pass variables --> i.seek(newSpot_bool)
+      // d.seekLocation = newSpot;
+      //// d.seek_arrive = true; //flip seek on
+      // d.duration_interval= random(15, 90); //new hover duration
+      // d.acc = new PVector(0.001, .001); // new speed
 
-      d.seek_arrive(newSpot, false);
+      // d.seek_arrive(newSpot, false);
     }
 
     d.update(); //add the motion to location
@@ -308,4 +309,25 @@ String timestamp() {
 void mousePressed() {
   print("x: " + mouseX);
   println("y: " + mouseY);
+
+  //for (int i = 0; i < dots.size() - 1; i++) {
+    //Dot d = dots.get(i);
+    int slot = int(random(0, dots.size()-1));
+    Dot d = dots.get(slot);
+    int x, y;
+    x = int(random(150, 460)); //must be on within the playground
+    y = int(random(140, 430));
+    PVector newSpot = new PVector(x, y);
+    print("new spot is: ");
+    println(newSpot);
+    //pass newSpot to array
+    //Don't want to call the method; just pass variables --> i.seek(newSpot_bool)
+    d.seekLocation = newSpot;
+    // d.seek_arrive = true; //flip seek on
+    d.duration_interval= random(15, 90); //new hover duration
+    d.acc = new PVector(0.001, .001); // new speed
+
+    d.seek_arrive(newSpot, false);
+    println("seeking arriving");
+  //}
 }

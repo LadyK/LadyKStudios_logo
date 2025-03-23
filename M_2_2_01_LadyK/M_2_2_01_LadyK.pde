@@ -10,7 +10,7 @@
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-// Unless required by applicable law or agreed to in writing, software
+// Unless required by applicable law or agre  ed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
@@ -60,7 +60,7 @@ ArrayList<Dot>dots;
 void setup() {
   size(600, 600);
   //size(900, 900);
-  frameRate(10);
+  frameRate(30);
   smooth();
   fontSize = 42;
   font = createFont("data/NotoSerifJP-Regular.ttf", fontSize);
@@ -145,32 +145,40 @@ void draw() {
 
     //if we've arrived and hover is flipped on:
     if (d.hover == true) { // hover the boolean variable
+      //println("hover");
       //should these nxt 4 lines be here?:
       //pick a length of time to hover:
       float amount = random(20, 180);
       d.ylow = d.location.y + amount; //lower area on screen
       d.yhigh = d.location.y - amount; // upper area on screen
       //if our current time - startHover time is less than out duration
-      if (millis() - d.startHover < d.duration_interval) { //over all hover
-        println("hovering");
+      float time_startHover = millis() - d.startHover;
+      if ( time_startHover < d.duration_interval) { //over all hover
+        //print("time_startHover  ");
+        //println(time_startHover);
+        //print("d.duration_interval is:  ");
+        //println(d.duration_interval);
+        //println("hovering");
         d.hover(d.seekLocation, d.ylow, d.yhigh); // if we are there, hover
       }// we are not hovering
     } else if (d.hover == false) {
-      // int x, y;
-      // x = int(random(150, 460)); //must be on within the playground
-      // y = int(random(140, 430));
-      // PVector newSpot = new PVector(x, y);
-      // //pass newSpot to array
-      // //Don't want to call the method; just pass variables --> i.seek(newSpot_bool)
-      // d.seekLocation = newSpot;
-      //// d.seek_arrive = true; //flip seek on
-      // d.duration_interval= random(15, 90); //new hover duration
-      // d.acc = new PVector(0.001, .001); // new speed
+      println("hovering completed");
+      int x, y;
+      x = int(random(150, 460)); //must be on within the playground
+      y = int(random(140, 430));
+      PVector newSpot = new PVector(x, y);
+      //pass newSpot to array
+      //Don't want to call the method; just pass variables --> i.seek(newSpot_bool)
+      d.seekLocation = newSpot;
+      // d.seek_arrive = true; //flip seek on
+      d.duration_interval= random(15, 90); //new hover duration
+      d.acc = new PVector(0.001, .001); // new speed
 
       // d.seek_arrive(newSpot, false);
     }
-
+    d.seek_arrive(false);
     d.update(); //add the motion to location
+
     d.playground(); // stay within the area
     d.display(random(80));
   }
@@ -272,7 +280,31 @@ void drawAnimation() {
   popStyle();
 }
 
+void mousePressed() {
+  print("x: " + mouseX);
+  println("y: " + mouseY);
 
+  //for (int i = 0; i < dots.size() - 1; i++) {
+  //Dot d = dots.get(i);
+  int slot = int(random(0, dots.size()-1));
+  Dot d = dots.get(slot);
+  int x, y;
+  x = int(random(150, 460)); //must be on within the playground
+  y = int(random(140, 430));
+  PVector newSpot = new PVector(x, y);
+  print("new spot is: ");
+  println(newSpot);
+  //pass newSpot to array
+  //Don't want to call the method; just pass variables --> i.seek(newSpot_bool)
+  d.seekLocation = newSpot;
+  // d.seek_arrive = true; //flip seek on
+  d.duration_interval= random(15, 90); //new hover duration
+  d.acc = new PVector(0.001, .001); // new speed
+
+  //d.seek_arrive(newSpot, false);
+  println("seeking arriving");
+  //}
+}
 
 
 
@@ -305,29 +337,3 @@ void keyPressed() {
 String timestamp() {
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", Calendar.getInstance());
 }//*/
-
-void mousePressed() {
-  print("x: " + mouseX);
-  println("y: " + mouseY);
-
-  //for (int i = 0; i < dots.size() - 1; i++) {
-    //Dot d = dots.get(i);
-    int slot = int(random(0, dots.size()-1));
-    Dot d = dots.get(slot);
-    int x, y;
-    x = int(random(150, 460)); //must be on within the playground
-    y = int(random(140, 430));
-    PVector newSpot = new PVector(x, y);
-    print("new spot is: ");
-    println(newSpot);
-    //pass newSpot to array
-    //Don't want to call the method; just pass variables --> i.seek(newSpot_bool)
-    d.seekLocation = newSpot;
-    // d.seek_arrive = true; //flip seek on
-    d.duration_interval= random(15, 90); //new hover duration
-    d.acc = new PVector(0.001, .001); // new speed
-
-    d.seek_arrive(newSpot, false);
-    println("seeking arriving");
-  //}
-}

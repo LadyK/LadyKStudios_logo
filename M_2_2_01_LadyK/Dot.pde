@@ -6,11 +6,12 @@ class Dot {
   PVector acc, velocity;
   float maxspeed, maxforce, startHover;
   boolean up, down, hover, seek_arrive;
-  float duration_interval, ylow, yhigh, timeStamp;
+  float duration_interval, ylow, yhigh, timeStamp, unique;
 
 
   Dot(int x, int y, color k) {
     location = new PVector(x, y);
+    seekLocation = new PVector(width/2, height/2);
     kuler = k;
     op = 50;
     acc = new PVector(0.001, .001);
@@ -45,12 +46,13 @@ class Dot {
     //faster acceleration towards goal
   }
 
-  void seek_arrive(PVector goal, boolean h) {
+  void seek_arrive(boolean h) {
     //individual's duration set here for how long should hover
     //duration = random(1000, 5000);
     //print("duration is: ");
     //println(duration);
-    PVector desired = PVector.sub(goal, location);
+   // println("seeking");
+    PVector desired = PVector.sub(seekLocation, location);
     float d = desired.mag();
     if (d < 150 && d > 10) {
       float m = map(d, 0, 100, 0, maxspeed);
@@ -113,8 +115,23 @@ class Dot {
       velocity.y *= -1; // 150;
     }
   }
+  color runColor() {
+    /*
+    float angle = 0;
+     float k;
+     k = sin(angle) + PI *100;
+     //if(k > 255) k= 0;
+     angle += 0.02;
+     kuler = color(k);*/
+    float secs = millis()*.001 + unique;
+    int r = (int) (sin(secs)*128+128);
+    int g = (int) (sin(secs + 2)*128+128);
+    int b = (int) (sin(secs + 4)*128+128);
+    return kuler = color(r, g, b);
+  }
 
   void display(float d) {
+    kuler = runColor();
     float rand = random(0, 5);
     float d_mapped;
     if (rand > 3) {
@@ -125,7 +142,7 @@ class Dot {
     //background(255);
     //pushMatrix();
     //translate(width*3/4.0, height*3/4.0);
-    stroke(255, 0, 0);
+    stroke(kuler);
     strokeWeight(1);
     noFill();
     ellipse(location.x, location.y, 20, 20); //ring

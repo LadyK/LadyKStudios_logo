@@ -60,7 +60,7 @@ ArrayList<Dot>dots;
 void setup() {
   size(600, 600);
   //size(900, 900);
-  frameRate(30);
+  //frameRate(15);
   smooth();
   fontSize = 42;
   font = createFont("data/NotoSerifJP-Regular.ttf", fontSize);
@@ -78,6 +78,7 @@ void setup() {
   for (int i = 0; i <= 1; i++) { // make limit 0 to turn off
     //Dot dot = new Dot( int(random(100, 400)), int(random(100, 400) ), color(255, 0, 0) );
     //append(dots, dot); //dots.append(dot);
+    //** location of each dot starting
     dots.add(new Dot( int(random(150, 350)), int(random(150, 350) ), color(255, 0, 0) ));
   }
 }
@@ -135,8 +136,11 @@ void draw() {
   //different colors; different widths (small large
   for (int i = 0; i < dots.size() - 1; i++) {
     Dot d = dots.get(i); // array list vs array
-    //****
-
+    
+    if (d.seek_arrive){ //<- needed otherwise, calling to seek unconditionally
+      d.seek_arrive(false);
+    }
+    
     //d.zipOver(newSpot); // need to program this
     //d.update();
     //d.arrive(newSpot, false);
@@ -146,38 +150,63 @@ void draw() {
     //if we've arrived and hover is flipped on:
     if (d.hover == true) { // hover the boolean variable
       //println("hover");
-      //should these nxt 4 lines be here?:
-      //pick a length of time to hover:
-      float amount = random(20, 180);
-      d.ylow = d.location.y + amount; //lower area on screen
-      d.yhigh = d.location.y - amount; // upper area on screen
-      //if our current time - startHover time is less than out duration
-      float time_startHover = millis() - d.startHover;
-      if ( time_startHover < d.duration_interval) { //over all hover
-        //print("time_startHover  ");
-        //println(time_startHover);
-        //print("d.duration_interval is:  ");
-        //println(d.duration_interval);
-        //println("hovering");
-        d.hover(d.seekLocation, d.ylow, d.yhigh); // if we are there, hover
-      }// we are not hovering
-    } else if (d.hover == false) {
-      println("hovering completed");
-      int x, y;
-      x = int(random(150, 460)); //must be on within the playground
-      y = int(random(140, 430));
-      PVector newSpot = new PVector(x, y);
-      //pass newSpot to array
-      //Don't want to call the method; just pass variables --> i.seek(newSpot_bool)
-      d.seekLocation = newSpot;
-      // d.seek_arrive = true; //flip seek on
-      d.duration_interval= random(15, 90); //new hover duration
-      d.acc = new PVector(0.001, .001); // new speed
+      d.hoverFirst_function();//
+    //  float amount, time_startHover;
+      
+    //  time_startHover = millis() - d.startHover;  // put it up here to run vs 163
+    //  //println("my time
+    //  if (d.hoverFirst == true) {
+    //    println("I made it here        ");
+       
+    //    //should these nxt 4 lines be here?:
+    //    //pick a length of time to hover:
+    //    amount = random(280, 480);
+    //    d.ylow = d.location.y + amount; //lower area on screen
+    //    d.yhigh = d.location.y - amount; // upper area on screen
+    //    //if our current time - startHover time is less than out duration
+    //    //time_startHover = millis() - d.startHover;
+    //    d.hoverFirst = false;
+    //  }
 
-      // d.seek_arrive(newSpot, false);
+    //  if ( time_startHover < d.duration_interval) { // hover
+    //    //print("time_startHover  ");
+    //    //println(time_startHover);
+    //    //print("d.duration_interval is:  ");
+    //    //println(d.duration_interval);
+    //    println("hovering");
+    //    d.hover(d.seekLocation, d.ylow, d.yhigh); // if we are there, hover
+    //  }// we are not hovering
+    //  else {
+    //    d.hover = false;
+    //  }
+    } else if (d.hover == false) {
+        //seek new time increment
+        //seek new location
+        if(d.hoverDone){
+          int x = int(random(150, 450));
+          int y = int(random(150, 450));
+          d.seekLocation = new PVector(x, y);
+          d.seek_arrive = true;
+          d.hoverDone = false;
+        }
+     // d.hoverFirst = true; // <---- this probably needs to be somewhere else
+
+    //  ////println("hovering completed");
+    //  //int x, y;
+    //  //x = int(random(150, 460)); //must be on within the playground
+    //  //y = int(random(140, 430));
+    //  //PVector newSpot = new PVector(x, y);
+    //  ////pass newSpot to array
+    //  ////Don't want to call the method; just pass variables --> i.seek(newSpot_bool)
+    //  //d.seekLocation = newSpot;
+    //  //// d.seek_arrive = true; //flip seek on
+    //  //d.duration_interval= random(15, 90); //new hover duration
+    //  //d.acc = new PVector(0.001, .001); // new speed
     }
-    d.seek_arrive(false);
-    d.update(); //add the motion to location
+    
+    if(!d.hover){
+      d.update(); //add the motion to location
+    }
 
     d.playground(); // stay within the area
     d.display(random(80));
@@ -201,6 +230,7 @@ void draw() {
   if (drawText) {
     drawText();
   }
+  println("end draw");
 }
 
 void drawText() {
@@ -286,20 +316,24 @@ void mousePressed() {
 
   //for (int i = 0; i < dots.size() - 1; i++) {
   //Dot d = dots.get(i);
-  int slot = int(random(0, dots.size()-1));
-  Dot d = dots.get(slot);
-  int x, y;
-  x = int(random(150, 460)); //must be on within the playground
-  y = int(random(140, 430));
-  PVector newSpot = new PVector(x, y);
+  // int slot = int(random(0, dots.size()-1));
+  //Dot d = dots.get(slot);
+  Dot d = dots.get(0);
+  //int x, y;
+  //x = int(random(150, 460)); //must be on within the playground
+  //y = int(random(140, 430));
+  //PVector newSpot = new PVector(x, y);
+  PVector newSpot = new PVector(mouseX, mouseY);
   print("new spot is: ");
   println(newSpot);
   //pass newSpot to array
   //Don't want to call the method; just pass variables --> i.seek(newSpot_bool)
   d.seekLocation = newSpot;
-  // d.seek_arrive = true; //flip seek on
-  d.duration_interval= random(15, 90); //new hover duration
-  d.acc = new PVector(0.001, .001); // new speed
+  d.seek_arrive = true; //flip seek on
+  
+  // this  line below were active:
+  //d.duration_interval= random(15, 90); //new hover duration
+ 
 
   //d.seek_arrive(newSpot, false);
   println("seeking arriving");

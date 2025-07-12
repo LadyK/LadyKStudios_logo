@@ -1,11 +1,11 @@
 class Dot {
 
-  PVector location, seekLocation;
+  PVector location, seekLocation, hoverCenter;
   color kuler;
   int op, topspeed;
   PVector acc, velocity;
   float maxspeed, maxforce, startHover;
-  boolean up, down, hover, seek_arrive;
+  boolean up, down, hover, seek_arrive, hoverFirst, hoverDone;
   float duration_interval, ylow, yhigh, timeStamp, unique;
 
 
@@ -16,8 +16,8 @@ class Dot {
     op = 50;
     acc = new PVector(0.001, .001);
 
-    maxspeed = 4;
-    maxforce = 0.1;
+    maxspeed = 24; //4
+    maxforce = 0.5;
 
     velocity = PVector.random2D(); //new PVector(0, 0);
     velocity.mult(0.5);
@@ -25,12 +25,15 @@ class Dot {
     up = true;
     down = false;
     hover = false;
+    hoverDone = false;
     startHover = 0;
-    hover = false;
+    hoverCenter = location.copy();
     //seek = true;
     //arrive = false;
     duration_interval = random(15000, 90000);
+    println(duration_interval);
     timeStamp = 0;
+    hoverFirst = true; //is it our first time through hovering?
   }
 
   void update() {
@@ -51,22 +54,27 @@ class Dot {
     //duration = random(1000, 5000);
     //print("duration is: ");
     //println(duration);
-   // println("seeking");
+    println("seeking_arrive active");
     PVector desired = PVector.sub(seekLocation, location);
     float d = desired.mag();
-    if (d < 150 && d > 10) {
+    if (d < 250 && d > 20) { // once we get close to location, slow down
       float m = map(d, 0, 100, 0, maxspeed);
       desired.setMag(m);
-    } else if (( d <= 10) && (h == false) ) {
+    } else if (( d <= 20) && (h == false) ) { //if we are close, and not hovering
+      //getting close to target
+      // go through initialization period: (dbl check placement and for dups
       hover = true;
+
       startHover = millis();
-     // print("startHover is: ");
-      //println("startHover");
+      velocity.set(0, 0);
+      seek_arrive = false;
       h = true;
+      hoverCenter = location.copy(); // lock into position to hover
     } else {
+      println("MEEEEEEEEEEE");
       desired.setMag(maxspeed);
       hover = false;
-      h = false; // put this here?
+      //h = false; // put this here?
     }
     //steering = desired - velocity
     PVector steer = PVector.sub(desired, velocity);
@@ -74,27 +82,62 @@ class Dot {
     acc.add(steer);
   }
 
-  void hover(PVector home, float yLow, float yHigh) {
-     
+  void hoverFirst_function() {
+    float amount, time_startHover;
+    time_startHover = millis() - startHover; //subtract current time from trigger
+    if (hoverFirst == true) {
+      //the hover span
+      amount = random(100, 200); //distance/span of hover
+      ylow = location.y + amount; //lower area on screen
+      yhigh = location.y - amount; // upper area on screen
+      hoverFirst = false;
+    }
+    if ( time_startHover < duration_interval) { // hover
+      //print("time_startHover  ");
+      //println(time_startHover);
+      //print("d.duration_interval is:  ");
+      //println(d.duration_interval);
+      println("hover active");
+      hover(ylow, yhigh); // if we are there, hover
+    }// we are not hovering
+    else {
+      println("not hoovering");
+      hover = false;
+      hoverFirst = true;
+      hoverDone = true;
+      duration_interval = random(5000, 10000); //pick new duration
+    }
+  }
+
+  void hover(float yLow, float yHigh) {
+    /*
+    println("hovering");
+    float hoverSpeed = 1.2;
     //up and down
     //for a certain amount of time
     // once in a while, slight back and forth
-      if (down == true) {
-        if (location.y <= yLow && location.y >= home.y) { 
-          location.y++;
-        } else {
-          down = false;
-          up = true;
-        }
-      }  //down
-      else if (up == true) {
-        if (location.y >= yHigh && location.y >= home.y) {
-          location.y--;
-        } else {
-          up = false;
-          down = true;
-        }
-      } //up
+    if (down == true) {
+      if (location.y >= yLow) {
+        down = false;
+        up = true;
+      }
+    }  //down
+    else if (up == true) {
+      location.y -= hoverSpeed;
+      if (location.y <= yHigh) {
+        up = false;
+        down = true;
+      }
+    } //up
+    */
+
+    float hoverRange = 10;
+    float flickerRange = 4;
+    //float centerY = location.y;
+    //float centerX = location.x;
+    float t = (millis() - startHover) / 400.0;
+    location.y = hoverCenter.y + sin(t) * hoverRange; //sin(t * TWO_PI)
+    location.x = hoverCenter.x + sin(t * 1.5) * flickerRange ;
   } //hover
 
 
